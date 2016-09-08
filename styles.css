@@ -1,0 +1,40 @@
+/* Master Styles */
+h1 {
+  color: #369; 
+  font-family: Arial, Helvetica, sans-serif;   
+  font-size: 250%;
+}
+h2, h3 { 
+  color: #444;
+  font-family: Arial, Helvetica, sans-serif;   
+  font-weight: lighter;
+}
+body { 
+   background-color: #000;
+}
+body, input[text], button { 
+  color: #888; 
+  font-family: Cambria, Georgia; 
+}
+
+/* 
+ * See https://github.com/angular/angular.io/blob/master/public/docs/_examples/styles.css
+ * for the full set of master styles used by the documentation samples
+ */
+
+
+thumbnail img {
+    opacity: 0;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+
+    transition: opacity 0.3s;
+    -webkit-transition: opacity 0.3s;
+    -moz-transition: opacity 0.3s;
+    -ms-transition: opacity 0.3s;
+}
+thumbnail.loaded img {
+    opacity: 1.0;
+}
