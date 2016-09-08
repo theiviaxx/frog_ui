@@ -2,13 +2,13 @@ import { Component, Input, OnInit, OnDestroy, AfterContentInit } from '@angular/
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { SelectionService } from './selection.service';
-import { UserService, User } from '../user/user.service';
+import { UserService } from '../user/user.service';
 import { WorksService } from './works.service';
 import { TagsComponent } from './tags.component';
 import { TagsService } from './tags.service';
 import { AutocompleteComponent } from './autocomplete.component';
 import { TagArtistFilterPipe } from './tag-artist-filter.pipe';
-import { IItem, Tag } from '../shared/iitem';
+import { IItem, Tag, User } from '../shared';
 
 @Component({
     selector: 'works-detail',

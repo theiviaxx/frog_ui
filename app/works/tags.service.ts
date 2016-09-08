@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import { Subject } from 'rxjs/Subject';
 
-import { Tag } from '../shared/iitem';
+import { Tag } from '../shared';
 
 @Injectable()
 export class TagsService {

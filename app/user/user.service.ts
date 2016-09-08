@@ -4,12 +4,7 @@ import {Http, Request, RequestMethod, Response, RequestOptions, URLSearchParams,
 import {Observable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
 
-export class User {
-    public id: number;
-    public name: string;
-    public email: string;
-    public username: string;
-}
+import { User } from '../shared';
 
 
 @Injectable()

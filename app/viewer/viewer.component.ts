@@ -1,7 +1,6 @@
 import {Component, Input, AfterViewInit, HostListener, ViewChild, ElementRef} from '@angular/core';
-// import {ActivatedRoute} from 'angular2/router';
-import {Point, Matrix} from '../shared/euclid';
-import {IItem} from '../shared/iitem';
+
+import {Point, Matrix, IItem} from '../shared';
 import {WorksService} from '../works/works.service';
 
 

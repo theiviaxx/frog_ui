@@ -9,7 +9,6 @@ import { routing, appRoutingProviders } from './app.routing';
 
 import { ViewerComponent } from './viewer/viewer.component';
 import { WorksModule } from './works/works.module';
-
 import { UserModule } from './user/user.module';
 
 

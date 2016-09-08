@@ -3,7 +3,7 @@ import { NgStyle } from '@angular/common';
 
 import { SelectionService } from './selection.service';
 
-import { Point, Matrix, Rect } from '../shared/euclid';
+import { Point, Matrix, Rect } from '../shared';
 
 
 @Component({

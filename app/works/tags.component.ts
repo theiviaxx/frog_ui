@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, AfterViewIni
 import { CORE_DIRECTIVES } from '@angular/common';
 
 import { TagsService } from './tags.service';
-import { Tag } from '../shared/iitem';
+import { Tag } from '../shared';
 
 
 @Component({
@@ -44,7 +44,7 @@ export class TagsComponent implements OnInit, OnDestroy, AfterViewInit {
         let tag = this.service.getTagById(this.tag.id);
         if (tag !== null) {
             this.tag.name = tag.name;
-            this.tag.author = tag.author;
+            this.tag.artist = tag.artist;
             this._changeDetectionRef.detectChanges();
         }
     }

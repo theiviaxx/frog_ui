@@ -4,8 +4,7 @@ import { Http, Request, RequestMethod, Response, RequestOptions, URLSearchParams
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 
-import { IItem, Tag} from '../shared/iitem';
-import { User } from '../user/user.service';
+import { IItem, Tag, User } from '../shared';
 
 export class Gallery {
     items: IItem[]

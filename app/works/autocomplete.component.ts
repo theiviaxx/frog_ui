@@ -1,7 +1,7 @@
 import { Component, ElementRef, Output, EventEmitter, OnInit } from '@angular/core';
 
 import { TagsService } from './tags.service';
-import { Tag } from '../shared/iitem';
+import { Tag } from '../shared';
 
 @Component({
     selector: 'autocomplete',

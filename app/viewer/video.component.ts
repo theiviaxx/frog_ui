@@ -1,4 +1,4 @@
-import {IItem, Tag, Author} from '../shared/iitem';
+import { IItem, Tag, User, Comment } from '../shared';
 
 export class FVideo implements IItem {
     hash: string;
@@ -9,7 +9,7 @@ export class FVideo implements IItem {
     guid: string;
     id: number;
     title: string;
-    author: Author;
+    author: User;
     modified: Date;
     created: Date;
     width: number;
@@ -17,4 +17,7 @@ export class FVideo implements IItem {
     source: string;
     small: string;
     thumbnail: string;
+    comments: Comment[];
+    description: string;
+    selected: boolean;
 }

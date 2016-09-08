@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 
 import { SelectionService } from './selection.service';
 import { WorksService } from './works.service';
-import { IItem, Tag } from '../shared/iitem';
+import { IItem, Tag } from '../shared';
 import { TagsComponent } from './tags.component';
 import { TagsService } from './tags.service';
 import { AutocompleteComponent } from './autocomplete.component';

@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { WorksService } from './works.service';
 import { TagsComponent } from './tags.component';
 import { AutocompleteComponent } from './autocomplete.component';
-import { Tag } from '../shared/iitem';
+import { Tag } from '../shared';
 
 @Component({
     selector: 'works-filter',

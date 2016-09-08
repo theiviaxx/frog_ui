@@ -5,8 +5,7 @@ import {Observable} from 'rxjs/Observable';
 import {Observer} from 'rxjs/Observer';
 import { Subject } from 'rxjs/Subject';
 
-import {IItem} from '../shared/iitem';
-import { Rect } from '../shared/euclid';
+import { IItem, Rect } from '../shared';
 
 export class Gallery {
     items: IItem[]
