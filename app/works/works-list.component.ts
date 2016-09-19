@@ -26,14 +26,9 @@ import {WorksThumbnailComponent} from './works-thumbnail.component';
         <thumbnail class='col s2 loaded' *ngFor="let item of gallery.items" [item]="item" [class.selected]="item.selected"></thumbnail>
     </div>`,
     styles: [
-        '.selected {border: 1px solid #fff; }',
         '.spinner { position: fixed; background: rgba(0, 0, 0, 0.5); width: 100%; height: 100%; color: #fff; font-size: 36px; text-align: center; padding-top: 50%; z-index: 3001; }',
-        '.col {padding: 0;}',
-        'thumbnail {position: relative;}',
-        'thumbnail img {margin: 2px;opacity: 0;box-sizing: border-box;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;-ms-box-sizing: border-box;transition: opacity 0.3s;-webkit-transition: opacity 0.3s;-moz-transition: opacity 0.3s;-ms-transition: opacity 0.3s;}',
-        'thumbnail.loaded img {opacity: 1.0;}'
-    ],
-    directives: [WorksThumbnailComponent]
+        '.col {padding: 0;}'
+    ]
 })
 export class WorksListComponent implements OnInit {
     gallery: Gallery

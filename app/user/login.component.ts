@@ -5,9 +5,9 @@ import { UserService } from './user.service';
 
 @Component({
     template: `
-    <hgroup class='light-green-text'>
+    <section class='light-green-text'>
         <h1>Frog Login</h1>
-    </hgroup>
+    </section>
     <form method='post' action='/frog/login'>
         {{ csrf_token }}
         <div class='row'>
@@ -41,7 +41,7 @@ import { UserService } from './user.service';
         'body { font-family: Helvetica;background: #333;-webkit-font-smoothing: antialiased; }',
         'form { width: 380px;margin: 4em auto;padding: 3em 2em 2em 2em;background: #666;border: 1px solid #777;box-shadow: rgba(0,0,0,0.14902) 0px 1px 1px 0px,rgba(0,0,0,0.09804) 0px 1px 2px 0px; }',
         'footer { text-align: center; }',
-        'hgroup { text-align:center; margin-top: 4em; }',
+        'section { text-align:center; margin-top: 4em; }',
 
     ]
 })

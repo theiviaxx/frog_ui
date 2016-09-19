@@ -1,9 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, HostListener } from '@angular/core';
 import { NgStyle } from '@angular/common';
 
-import { SelectionService } from './selection.service';
-
-import { Point, Matrix, Rect } from '../shared';
+import { Point, Matrix, Rect, SelectionService } from '../shared';
 
 
 @Component({
@@ -11,8 +9,7 @@ import { Point, Matrix, Rect } from '../shared';
     template: `<div #canvas [ngStyle]="{'display': (isMouseDown) ? 'block':'none'}"></div>`,
     styles: [
         'div { position: absolute; border: 1px solid rgb(51,153,255); background: rgba(51, 153, 255, 0.5); z-index: 1000; }'
-    ],
-    directives: [NgStyle]
+    ]
 })
 export class SelectionComponent implements OnInit, AfterViewInit {
     @ViewChild('canvas') canvas: ElementRef;

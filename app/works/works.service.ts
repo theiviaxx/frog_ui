@@ -17,18 +17,18 @@ export class WorksService {
     private _observer: Observer<IItem[]>;
     private _items: IItem[];
     private _guids: string[];
-    private _id: number;
     private _requested: number;
+    public id: number;
     public selection: IItem[];
     public focusItem: IItem;
-    public _terms: any[][];
+    public terms: Array<Array<any>>;
     public loading: boolean;
     
     constructor(public http:Http) {
         this._items = [];
         this._guids = [];
-        this._terms = [[]];
-        this._id = 0;
+        this.terms = [[], []];
+        this.id = 0;
         this.loading = false;
         this.results = Observable.create(observer => {
             this._observer = observer
@@ -36,13 +36,13 @@ export class WorksService {
     }
     get(id:number=0, append:boolean=false) {
         if (id > 0) {
-            this._id = id;
+            this.id = id;
         }
 
-        let url = 'http://127.0.0.1:8000/frog/gallery/' + this._id + '/filter';
+        let url = 'http://127.0.0.1:8000/frog/gallery/' + this.id + '/filter';
         let options = new RequestOptions();
         options.search = new URLSearchParams();
-        options.search.set('filters', JSON.stringify(this._terms));
+        options.search.set('filters', JSON.stringify(this.terms));
         options.search.set('more', append.toString());
         options.search.set('timestamp', new Date().getTime().toString());
 
@@ -72,16 +72,16 @@ export class WorksService {
         return Observable.throw(error);
     }
     reset() {
-        this._terms.forEach(element => {
+        this.terms.forEach(element => {
             element.length = 0;
         });
     }
     addTerm(term:any, bucket:number=0, append:boolean=false) {
         if (!append) {
-            this._terms[bucket].length = 0;
+            this.terms[bucket].length = 0;
         }
-        if (this._terms[bucket].indexOf(term)) {
-            this._terms[bucket].push(term);
+        if (this.terms[bucket].indexOf(term)) {
+            this.terms[bucket].push(term);
         }
     }
     likeItem(item:IItem) {
@@ -127,7 +127,7 @@ export class WorksService {
         return this.http.get(url, options).map(this.extractData);
     }
     remove(items: IItem[]) {
-        let url = 'http://127.0.0.1:8000/frog/gallery/' + this._id + '/';
+        let url = 'http://127.0.0.1:8000/frog/gallery/' + this.id + '/';
         let options = new RequestOptions();
         options.body = {
             guids: items.map(function(_) { return _.guid; }).join(',')

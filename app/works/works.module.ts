@@ -5,18 +5,16 @@ import { FormsModule } from '@angular/forms';
 import { WorksComponent } from './works.component';
 import { WorksListComponent } from './works-list.component';
 import { WorksThumbnailComponent } from './works-thumbnail.component';
+import { WorksDetailComponent } from './works-detail.component';
+import { NavigationComponent } from './navigation.component';
 import { WorksService } from './works.service';
 import { worksRouting, worksRoutingProviders } from './works.routing';
 
 import { FilterComponent } from './filter.component';
-
-import { TagsComponent } from './tags.component';
-import { TagsService } from './tags.service';
-
 import { SelectionComponent } from './selection.component';
-import { SelectionService } from './selection.service';
-
 import { GalleryService } from './gallery.service';
+
+import { TagsComponent, TagsService, SelectionService, SelectionDetailComponent, CapitalizePipe, TagArtistFilterPipe, AutocompleteComponent, CommentComponent } from '../shared';
 
 
 @NgModule({
@@ -29,9 +27,16 @@ import { GalleryService } from './gallery.service';
         WorksComponent,
         WorksThumbnailComponent,
         WorksListComponent,
+        WorksDetailComponent,
+        NavigationComponent,
         FilterComponent,
         TagsComponent,
-        SelectionComponent
+        SelectionComponent,
+        SelectionDetailComponent,
+        CapitalizePipe,
+        TagArtistFilterPipe,
+        AutocompleteComponent,
+        CommentComponent
     ],
     providers: [
         WorksService,

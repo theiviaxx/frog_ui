@@ -2,7 +2,7 @@ import {Component, Input, OnInit, OnDestroy, ElementRef, AfterViewInit } from '@
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { WorksService } from './works.service';
-import { SelectionService } from './selection.service';
+import { SelectionService, TagsService, CapitalizePipe } from '../shared';
 
 @Component({
     selector: 'thumbnail',
@@ -12,19 +12,25 @@ import { SelectionService } from './selection.service';
     </a>
     <div class='thumbnail-details' (window:keyup)="clearSelection($event)">
         <p>{{item.title}}</p>
-        <i (click)="like()" class="tiny material-icons">thumb_up</i>
+        <a class='frog-like'>
+            <i (click)="like()" class="tiny material-icons">thumb_up</i><small>{{item.like_count}}</small>
+        </a>
         <i (click)="setFocus($event)" data-activates="works_detail" class="tiny material-icons">info</i>
-        <small>{{item.author.username}}</small>
-        <small>{{item.selected}}</small>
+        <small (click)="setAuthor(item.author.name)">{{item.author.name | capitalize:1}}</small>
     </div>`,
-    styles: ['.thumbnail-details {position: absolute;bottom: 0;width: 100%;background: rgba(0, 0, 0, 0.25);}'],
-    properties: ['data']
+    styles: [
+        '.thumbnail-details { color: #8bc34a; }',
+        'p { position: absolute; bottom: 12px; font-size: 18px; color: #fff; line-height: 16px; font-weight: normal; overflow: hidden; cursor: pointer; }',
+        'div > i { position: absolute; right: 4px; bottom: 4px; cursor: pointer; }',
+        '.frog-like { position: absolute; right: 28px; bottom: 4px; cursor: pointer; color: #8bc34a; }',
+        'div > small { position: absolute; bottom: 4px; }'
+    ]
 })
 export class WorksThumbnailComponent implements OnInit, AfterViewInit {
     @Input() item;
     private initialized: boolean;
 
-    constructor(private element: ElementRef, private router: Router, private service: SelectionService, private works: WorksService) {
+    constructor(private element: ElementRef, private router: Router, private service: SelectionService, private works: WorksService, private tags: TagsService) {
         this.initialized = false;
         this.service.selectionRect.subscribe({
             next: (rect) => {
@@ -61,9 +67,17 @@ export class WorksThumbnailComponent implements OnInit, AfterViewInit {
         if (!this.initialized) {
             this.initialized = true;
             $(event.target).sideNav({
-                edge: 'right'
+                edge: 'right',
+                menuWidth: 365
             });
             $(event.target).sideNav('show');
+            $('.collapsible').collapsible();
+        }
+    }
+    setAuthor(name: string) {
+        let tag = this.tags.getTagByName(name);
+        if (tag != null) {
+            this.router.navigate(['/w/' + this.works.id + '/' + tag.id]);
         }
     }
     clearSelection(event) {

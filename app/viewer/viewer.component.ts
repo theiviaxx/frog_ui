@@ -7,8 +7,7 @@ import {WorksService} from '../works/works.service';
 @Component({
     selector: 'viewer',
     templateUrl: './app/viewer/viewer.component.html',
-    styleUrls: ['./app/viewer/viewer.component.css'],
-    properties: ['data']
+    styleUrls: ['./app/viewer/viewer.component.css']
 })
 export class ViewerComponent implements AfterViewInit {
     @ViewChild('canvas') canvas: ElementRef;
