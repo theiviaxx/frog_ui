@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
-import {WorksService, Gallery} from './works.service';
-import {WorksThumbnailComponent} from './works-thumbnail.component';
+import { WorksService } from './works.service';
+import { WorksThumbnailComponent } from './works-thumbnail.component';
+
+import { IItem } from '../shared/index';
 
 @Component({
     selector: 'works-list',
@@ -23,7 +25,7 @@ import {WorksThumbnailComponent} from './works-thumbnail.component';
         </div>
     </div>
     <div class='row'>
-        <thumbnail class='col s2 loaded' *ngFor="let item of gallery.items" [item]="item" [class.selected]="item.selected"></thumbnail>
+        <thumbnail class='col s2 loaded' *ngFor="let item of items" [item]="item" [class.selected]="item.selected"></thumbnail>
     </div>`,
     styles: [
         '.spinner { position: fixed; background: rgba(0, 0, 0, 0.5); width: 100%; height: 100%; color: #fff; font-size: 36px; text-align: center; padding-top: 50%; z-index: 3001; }',
@@ -31,12 +33,11 @@ import {WorksThumbnailComponent} from './works-thumbnail.component';
     ]
 })
 export class WorksListComponent implements OnInit {
-    gallery: Gallery
+    private items: IItem[];
 
     constructor(private service:WorksService) {
-        this.gallery = new Gallery();
         this.service.results.subscribe(
-                       items => this.gallery.items = items
+                       items => this.items = items
                    );
     }
     ngOnInit() {

@@ -34,7 +34,7 @@ import { UserService } from './user.service';
         <div class='msg alert-danger'>{{message}}</div>
     </div>
     <footer>
-        <a href="http://frog.readthedocs.io/en/latest/" target="_blank"><img src="http://127.0.0.1:8000/static/frog/i/frog.png"></a>
+        <a href="http://frog.readthedocs.io/en/latest/" target="_blank"><img src="/static/frog/i/frog.png"></a>
     </footer>
     `,
     styles: [

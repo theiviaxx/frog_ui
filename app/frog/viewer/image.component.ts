@@ -1,54 +1,95 @@
-import {Component, Input, AfterViewInit, HostListener, ViewChild, ElementRef} from '@angular/core';
+import { Component, Input, AfterViewInit, HostListener, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 
-import {Point, Matrix, IItem} from '../shared';
-import {WorksService} from '../works/works.service';
+import { Point, Matrix, Rect } from '../shared';
+import { IItem, Tag, User, Comment, SelectionService } from '../shared';
 
+class FImage implements IItem {
+    hash: string;
+    tags: Tag[];
+    deleted: boolean;
+    image: string;
+    height: number;
+    guid: string;
+    id: number;
+    title: string;
+    author: User;
+    modified: Date;
+    created: Date;
+    width: number;
+    comment_count: number;
+    source: string;
+    small: string;
+    thumbnail: string;
+    comments: Comment[];
+    description: string;
+    selected: boolean;
+}
 
 @Component({
-    selector: 'viewer',
-    templateUrl: './app/viewer/viewer.component.html',
-    styleUrls: ['./app/viewer/viewer.component.css']
+    selector: 'frog-image',
+    template: `
+    <div *ngIf="loading" class='spinner'>
+        loading...
+        <div class="preloader-wrapper small active">
+            <div class="spinner-layer spinner-green-only">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <img #img src="{{object.image}}" style='display: none;' />
+    <canvas #canvas width="{{width}}" height="{{height}}"></canvas>`,
+    styles: [
+        '.spinner { position: fixed; background: rgba(0, 0, 0, 0.5); width: 100%; height: 100%; color: #fff; font-size: 36px; text-align: center; padding-top: 50%; z-index: 3001; }'
+    ]
 })
-export class ViewerComponent implements AfterViewInit {
+export class ImageComponent{
     @ViewChild('canvas') canvas: ElementRef;
     @ViewChild('img') img: ElementRef;
-    
+
+    private object: FImage;
     private origin: Point = new Point();
     private xform: Matrix = Matrix.Identity();
     private main: Matrix = Matrix.Identity();
     private scaleValue: number = 1.0;
     private axis: string;
-    private objects: IItem[] = [];
-    private index: number = 0;
+    private loading: boolean = false;
     private isMouseDown: boolean = false;
-    private isOpen: boolean = true;
     private ctx: CanvasRenderingContext2D;
-    private fimage: HTMLImageElement;
-    width: number = 0;
-    height: number = 0;
+    private element: HTMLImageElement;
+    width: number;
+    height: number;
 
-    @Input() image;
-    constructor(
-        canvas: ElementRef,
-        img: ElementRef,
-        // private activatedroute: ActivatedRoute,
-        private _query:WorksService) {
-        this._query.results.subscribe(
-            items => this.build(items)
-        );
+    constructor(canvas: ElementRef, img: ElementRef, private service: SelectionService, private changeDetectionRef : ChangeDetectorRef) {
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
+        this.object = new FImage();
     }
     ngAfterViewInit() {
         this.ctx = this.canvas.nativeElement.getContext('2d');
-        this.fimage = this.img.nativeElement;
-        var self = this;
+        this.element = this.img.nativeElement;
         // TODO: How to properly do this in angular2
-        this.fimage.onload = this.render.bind(this);
-        this._query.get(1);
+        this.element.onload = this.resize.bind(this);
+        this.service.detail.subscribe(item => {
+            if (item) {
+                // this.setImage(item)
+                setTimeout(() => this.setImage(item), 0);
+            }
+        });
     }
-    build(items:IItem[]) {
-        this.objects = items;
-        this.render();
+    setImage(image: IItem) {
+        this.object = <FImage>image;
+        this.loading = true;
+        // this.changeDetectionRef.detectChanges();
     }
+    // -- Events
     @HostListener('window:mouseup')
     up() {
         this.isMouseDown = false;
@@ -102,29 +143,23 @@ export class ViewerComponent implements AfterViewInit {
     }
     @HostListener('window:resize')
     resize() {
+        this.loading = false;
         this.width = window.innerWidth;
         this.height = window.innerHeight;
         this.xform = this.main = new Matrix([
-            [this.objects[this.index].width, 0, 0],
-            [0, this.objects[this.index].height, 0],
+            [this.object.width, 0, 0],
+            [0, this.object.height, 0],
             [0, 0, 1]
         ]);
-        this.center();
+        this.fitToWindow();
     }
     clear() {
         this.ctx.clearRect(0, 0, this.width, this.height);
     }
     render() {
         this.clear();
-        if (this.objects.length == 0) {
-            return;
-        }
-        if (this.fimage.src == "http://localhost:3000/") {
-            this.fimage.src = 'http://127.0.0.1:8000' + this.objects[0].source;
-        }
-
         this.ctx.drawImage(
-            this.fimage,
+            this.element,
             Math.floor(this.xform.elements[2][0]),
             Math.floor(this.xform.elements[2][1]),
             Math.floor(this.xform.elements[0][0]),
@@ -133,8 +168,8 @@ export class ViewerComponent implements AfterViewInit {
     }
     center(scale:number = 1.0) {
         this.xform = new Matrix([
-            [this.objects[this.index].width, 0, 0],
-            [0, this.objects[this.index].height, 0],
+            [this.object.width, 0, 0],
+            [0, this.object.height, 0],
             [0, 0, 1]
         ]);
         this.scale(scale, scale);
@@ -145,24 +180,14 @@ export class ViewerComponent implements AfterViewInit {
         this.main = this.xform;
         this.render();
     }
-    next() {
-        let index:number = this.index + 1;
-        index = (index > this.objects.length - 1) ? 0 : index;
-        this.setIndex(index);
-    }
-    previous() {
-        let index = this.index - 1;
-        index = (index < 0) ? this.objects.length - 1 : index;
-        this.setIndex(index);
-    }
     original() {
         this.center();
     }
     fitToWindow() {
-
-    }
-    download() {
-
+        let size = this.xform.rect.fit(window.innerWidth, window.innerHeight);
+        let scale = size.width / this.object.width;
+        scale = (scale > 1.0) ? 1.0 : scale;
+        this.center(scale);
     }
     translate(x:number, y:number) {
         let m1:Matrix = new Matrix([
@@ -182,29 +207,4 @@ export class ViewerComponent implements AfterViewInit {
         let m2:Matrix = this.xform.x(m1);
         this.xform = m2.dup();
     }
-    setImage(image:string) {
-
-    }
-    setVideo(video:Object) {
-
-    }
-    setImages(images:any[], id:number) {
-
-    }
-    setIndex(index:number) {
-
-    }
-    private loadCallback() {
-
-    }
-    private progressCallback() {
-
-    }
-    show() {
-
-    }
-    hide() {
-
-    }
-
 }

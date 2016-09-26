@@ -20,7 +20,7 @@ export class UserService {
         this.preAuth();
     }
     preAuth() {
-        // let url = 'http://127.0.0.1:8000/frog/login';
+        // let url = '/frog/login';
 
         // this.http.get(url, {withCredentials: true})
         //     .subscribe(response => {
@@ -35,7 +35,7 @@ export class UserService {
         this.user.username = 'theiviaxx';
         
         this._observer.next(this.user);
-        // let url = 'http://127.0.0.1:8000/frog/user/';
+        // let url = '/frog/user/';
         // let options = new RequestOptions();
         // options.search = new URLSearchParams();
         // options.search.set('json', '1');
@@ -51,7 +51,7 @@ export class UserService {
         return body.values || [];
     }
     login() {
-        let url = 'http://127.0.0.1:8000/frog/login';
+        let url = '/frog/login';
 
         this.http.get(url, {withCredentials: true})
             .map(this.extractData).subscribe(response => {

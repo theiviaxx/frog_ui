@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { Comment } from '../models';
-import { CapitalizePipe } from '../capitalize.pipe';
+import { Comment } from './models';
+import { CapitalizePipe } from './capitalize.pipe';
 
 @Component({
     selector: 'comment-item',

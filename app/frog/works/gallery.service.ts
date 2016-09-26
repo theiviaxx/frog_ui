@@ -30,7 +30,7 @@ export class GalleryService {
         });
     }
     get() {
-        let url = 'http://127.0.0.1:8000/frog/gallery';
+        let url = '/frog/gallery';
         let options = new RequestOptions();
         options.search = new URLSearchParams();
         options.search.set('json', '1');

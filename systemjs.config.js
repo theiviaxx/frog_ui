@@ -24,7 +24,9 @@
       // other libraries
       'rxjs':                       'npm:rxjs',
       'angular2-in-memory-web-api': 'npm:angular2-in-memory-web-api',
-      'shared':                     'app/shared'
+      'shared':                     'app/frog/shared',
+      'works':                     'app/frog/works',
+      'viewer':                     'app/frog/viewer',
     },
     // packages tells the System loader how to load when no filename and/or no extension
     packages: {
@@ -39,7 +41,9 @@
         main: './index.js',
         defaultExtension: 'js'
       },
-      'shared':                     { main: './index.js', defaultExtension: 'js' }
+      'shared':                     { main: 'index.js', defaultExtension: 'js' },
+      'works':                     { main: 'index.js', defaultExtension: 'js' },
+      'viewer':                     { main: 'index.js', defaultExtension: 'js' }
     }
   });
 })(this);

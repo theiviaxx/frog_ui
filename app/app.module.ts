@@ -7,9 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { routing, appRoutingProviders } from './app.routing';
 
-import { ViewerComponent } from './viewer/viewer.component';
-import { WorksModule } from './works/works.module';
-import { UserModule } from './user/user.module';
+import { FrogModule } from './frog/frog.module';
 
 
 @NgModule({
@@ -19,12 +17,10 @@ import { UserModule } from './user/user.module';
         JsonpModule,
         ReactiveFormsModule,
         routing,
-        WorksModule,
-        UserModule
+        FrogModule,
     ],
     declarations: [
-        AppComponent,
-        ViewerComponent
+        AppComponent
     ],
     providers: [
         appRoutingProviders

@@ -2,26 +2,27 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { SelectionService } from './selection.service';
-import { WorksService } from '../../works/works.service';
-import { IItem, Tag } from '../models';
-import { TagsComponent } from '../tags/tags.component';
-import { TagsService } from '../tags/tags.service';
-import { TagArtistFilterPipe } from '../tags/tag-artist-filter.pipe';
-import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
+import { IItem, Tag } from './models';
+import { TagsComponent } from './tags.component';
+import { TagsService } from './tags.service';
+import { TagArtistFilterPipe } from './tag-artist-filter.pipe';
+import { AutocompleteComponent } from './autocomplete.component';
+
+import { WorksService } from '../works/index';
 
 @Component({
     selector: 'selection-detail',
     template: `
     <ul id="selection_sidenav" class="side-nav grey darken-4 grey lighten-4-text">
         <li class="stack">
-            <img *ngFor="let item of items | slice:0:10; let i = index" [style.left]="offset(i)" [style.top]="offset(i)" class="z-depth-1" src="http://127.0.0.1:8000{{item.thumbnail}}">
+            <img *ngFor="let item of items | slice:0:10; let i = index" [style.left]="offset(i)" [style.top]="offset(i)" class="z-depth-1" src="{{item.thumbnail}}">
         </li>
         <h4 class="title">
             <i class="material-icons green-text">photo_size_select_large</i> {{items.length}} Selected Items
         </h4>
         <div class="row">
             <div class="col s6">
-                <a href="http://127.0.0.1:8000/frog/download?guids={{guidString()}}" class="waves-effect waves-light btn blue"><i class="material-icons left">cloud</i> Download</a>
+                <a href="/frog/download?guids={{guidString()}}" class="waves-effect waves-light btn blue"><i class="material-icons left">cloud</i> Download</a>
             </div>
             <div class="col s6">
                 <a class="waves-effect waves-light btn blue"><i class="material-icons left">collections</i> Add to Collection</a>

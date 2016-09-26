@@ -3,21 +3,20 @@ import { Http, Request, RequestMethod, Response, RequestOptions, URLSearchParams
 
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { IItem, Tag, User } from '../shared';
-
-export class Gallery {
-    items: IItem[]
-}
 
 
 @Injectable()
 export class WorksService {
-    public results: Observable<IItem[]>;
+    // public results: Observable<IItem[]>;
     private _observer: Observer<IItem[]>;
-    private _items: IItem[];
-    private _guids: string[];
-    private _requested: number;
+    private items: IItem[];
+    private guids: string[];
+    private requested: number;
+    public results: BehaviorSubject<IItem[]>;
+    public resolved: BehaviorSubject<IItem[]>;
     public id: number;
     public selection: IItem[];
     public focusItem: IItem;
@@ -25,21 +24,20 @@ export class WorksService {
     public loading: boolean;
     
     constructor(public http:Http) {
-        this._items = [];
-        this._guids = [];
+        this.items = [];
+        this.guids = [];
         this.terms = [[], []];
         this.id = 0;
         this.loading = false;
-        this.results = Observable.create(observer => {
-            this._observer = observer
-        });
+        this.results = new BehaviorSubject<IItem[]>(this.items);
+        this.resolved = new BehaviorSubject<IItem[]>(this.items);
     }
     get(id:number=0, append:boolean=false) {
         if (id > 0) {
             this.id = id;
         }
 
-        let url = 'http://127.0.0.1:8000/frog/gallery/' + this.id + '/filter';
+        let url = '/frog/gallery/' + this.id + '/filter';
         let options = new RequestOptions();
         options.search = new URLSearchParams();
         options.search.set('filters', JSON.stringify(this.terms));
@@ -50,18 +48,26 @@ export class WorksService {
 
         this.http.get(url, options)
             .map(this.extractData).subscribe(items => {
-                this._items.length = 0;
+                this.items.length = 0;
                 for (var item of items) {
                     let obj = <IItem>item;
                     let author = <User>obj.author;
                     obj.author = author;
 
-                    this._items.push(obj);
-                    this._guids.push(obj.guid);
+                    this.items.push(obj);
+                    this.guids.push(obj.guid);
                 }
-                this._observer.next(this._items);
+                // this._observer.next(this._items);
+                this.results.next(this.items);
+                this.resolved.next(this.items);
                 this.loading = false;
             }, error => console.log(error));
+    }
+    getFromGuid(guid: string) {
+        let index = this.guids.indexOf(guid);
+        if (index > -1) {
+            return this.items[index];
+        }
     }
     extractData(res: Response) {
         let body = res.json();
@@ -85,31 +91,31 @@ export class WorksService {
         }
     }
     likeItem(item:IItem) {
-        let url = 'http://127.0.0.1:8000/frog/like/' + item.guid;
+        let url = '/frog/like/' + item.guid;
         this.http.put(url, null).subscribe(item => {
-                // Materialize.toast('Liked!');
+                Materialize.toast('Liked!');
             }, error => console.log('error loading items'));
     }
     getComments(item:IItem) {
-        let url = 'http://127.0.0.1:8000/frog/comment/?json=1&guid=' + item.guid;
+        let url = '/frog/comment/?json=1&guid=' + item.guid;
         return this.http.put(url, null).map(this.extractData);
     }
     addComment(item:IItem, comment:string) {
-        let url = 'http://127.0.0.1:8000/frog/comment/';
+        let url = '/frog/comment/';
         let options = new RequestOptions();
         options.body = {comment: comment, guid: item.guid};
         options.withCredentials = true;
         return this.http.post(url, options).map(this.extractData);
     }
     update(item: IItem) {
-        let url = 'http://127.0.0.1:8000/frog/piece/' + item.guid;
+        let url = '/frog/piece/' + item.guid;
         let options = new RequestOptions();
         options.body = {title: item.title, description: item.description};
         options.withCredentials = true;
         return this.http.put(url, options).map(this.extractData);
     }
     editTags(items: IItem[], add: Tag[], remove: Tag[]) {
-        let url = 'http://127.0.0.1:8000/frog/tag/manage';
+        let url = '/frog/tag/manage';
         let options = new RequestOptions();
         
         options.body = {
@@ -121,18 +127,28 @@ export class WorksService {
         return this.http.post(url, options).map(this.extractData);
     }
     download(items: IItem[]) {
-        let url = 'http://127.0.0.1:8000/frog/download';
+        let url = '/frog/download';
         let options = new RequestOptions();
+        options.search = new URLSearchParams();
         options.search.set('guids', items.map(function(_) { return _.guid; }).join(','));
         return this.http.get(url, options).map(this.extractData);
     }
     remove(items: IItem[]) {
-        let url = 'http://127.0.0.1:8000/frog/gallery/' + this.id + '/';
+        let url = '/frog/gallery/' + this.id + '/';
         let options = new RequestOptions();
         options.body = {
             guids: items.map(function(_) { return _.guid; }).join(',')
         };
         options.withCredentials = true;
         return this.http.delete(url, options).map(this.extractData);
+    }
+    resolveGuids(guids: string[]) {
+        let url = '/frog/p';
+        let options = new RequestOptions();
+        options.search = new URLSearchParams();
+        options.search.set('guids', guids.join(','));
+        this.http.get(url, options).map(this.extractData).subscribe(items => {
+            this.resolved.next(items);
+        });
     }
 }

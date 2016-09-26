@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, Output, EventEmitter, OnInit } from '@angular/core';
 
-import { TagsService } from '../tags/tags.service';
-import { Tag } from '../models';
+import { TagsService } from './tags.service';
+import { Tag } from './models';
 
 @Component({
     selector: 'autocomplete',

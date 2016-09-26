@@ -7,8 +7,8 @@ import { SelectionService, TagsService, CapitalizePipe } from '../shared';
 @Component({
     selector: 'thumbnail',
     template: `
-    <a href="http://127.0.0.1:8000/frog/image/{{item.guid}}" (click)="clickHandler($event)">
-        <img src='http://127.0.0.1:8000{{item.thumbnail}}'  style='width: 100%;' />
+    <a href="/frog/image/{{item.guid}}" (click)="clickHandler($event)">
+        <img src='{{item.thumbnail}}'  style='width: 100%;' />
     </a>
     <div class='thumbnail-details' (window:keyup)="clearSelection($event)">
         <p>{{item.title}}</p>
@@ -34,6 +34,9 @@ export class WorksThumbnailComponent implements OnInit, AfterViewInit {
         this.initialized = false;
         this.service.selectionRect.subscribe({
             next: (rect) => {
+                if (!this.item) {
+                    return;
+                }
                 let r = this.element.nativeElement.getBoundingClientRect();
                 if (rect.intersects(r)) {
                     this.service.selectItem(this.item);
@@ -56,7 +59,7 @@ export class WorksThumbnailComponent implements OnInit, AfterViewInit {
             this.service.selectItem(this.item, true);
         }
         else {
-            this.router.navigate(['/viewer', 0, this.item.guid]);
+            this.router.navigate(['/v', 0, this.item.guid]);
         }
     }
     like() {

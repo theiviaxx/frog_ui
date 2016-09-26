@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 
 import { TagsService } from './tags.service';
-import { Tag } from '../models';
+import { Tag } from './models';
 
 
 @Component({
@@ -24,7 +24,7 @@ export class TagsComponent implements OnInit, OnDestroy, AfterViewInit {
     @Output() onClose = new EventEmitter<Tag>();
     private tag: Tag;
 
-    constructor(private service: TagsService, private _changeDetectionRef : ChangeDetectorRef) {
+    constructor(private service: TagsService, private changeDetectionRef : ChangeDetectorRef) {
         this.tag = new Tag(0, '', false);
     }
     ngAfterViewInit() {
@@ -50,7 +50,7 @@ export class TagsComponent implements OnInit, OnDestroy, AfterViewInit {
         if (tag !== null) {
             this.tag.name = tag.name;
             this.tag.artist = tag.artist;
-            this._changeDetectionRef.detectChanges();
+            this.changeDetectionRef.detectChanges();
         }
     }
     close() {

@@ -170,9 +170,11 @@ export class WorksDetailComponent implements OnInit {
         });
         userservice.get();
         service.detail.subscribe(item => {
-            this.item = item;
-            this.isOwner = item.author.id == this.user.id;
-            this.works.getComments(item).subscribe(comments => this.comments = comments);
+            if (item) {
+                this.item = item;
+                this.isOwner = item.author.id == this.user.id;
+                this.works.getComments(item).subscribe(comments => this.comments = comments);
+            }
         });
         
     }

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import { Subject } from 'rxjs/Subject';
 
-import { Tag } from '../models';
+import { Tag } from './models';
 
 @Injectable()
 export class TagsService {
@@ -20,7 +20,7 @@ export class TagsService {
         this.tags = new Subject<Tag[]>();
     }
     get() {
-        this.http.get('http://127.0.0.1:8000/frog/tag?cache=' + Date.now())
+        this.http.get('/frog/tag?cache=' + Date.now())
             .map(this.extractData).subscribe(tags => {
                 this._tags = tags;
                 for (let tag of tags) {
@@ -52,7 +52,7 @@ export class TagsService {
         return null;
     }
     create(name: string) {
-        let url = 'http://127.0.0.1:8000/frog/tag/';
+        let url = '/frog/tag/';
         let options = new RequestOptions();
         options.body = {name: name};
         options.withCredentials = true;

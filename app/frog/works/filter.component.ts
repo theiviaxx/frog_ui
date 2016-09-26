@@ -65,7 +65,7 @@ export class FilterComponent implements OnInit, OnDestroy {
             }
 
             this.service.get(this.galleryid);
-        })
+        });
     }
     ngOnDestroy() {}
     addTag(event: any) {

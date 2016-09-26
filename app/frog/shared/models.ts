@@ -31,7 +31,6 @@ export interface IItem {
     hash: string;
     tags: Tag[];
     deleted: boolean;
-    image: string;
     height: number;
     guid: string;
     id: number;

@@ -12,6 +12,10 @@ export class Matrix {
     constructor(public elements:number[][]) {
         
     }
+    get rect(): Rect { return new Rect(this.elements[2][0], this.elements[2][1], this.elements[0][0], this.elements[1][1])}
+    public toString = () : string => {
+        return 'Matrix [' + this.elements[0].join(',') + ',' + this.elements[1].join(',') + ',' + this.elements[2].join(',') + ']';
+    }
     x(b:Matrix) {
         let i = this.elements.length;
         let nj = b.elements[0].length;
@@ -48,6 +52,16 @@ export class Matrix {
     }
 }
 
+export class Size {
+    constructor(private _width: number, private _height: number) {
+
+    }
+    get width(): number { return this._width; }
+    set width(value: number) { this._width = value; }
+    get height(): number { return this._height; }
+    set height(value: number) { this._height = value; }
+}
+
 export class Rect {
     constructor(private _x: number, private _y: number, private _width:number, private _height: number) {
 
@@ -65,11 +79,18 @@ export class Rect {
     get left(): number { return this.x; }
     get bottom(): number { return this._y + this.height; }
     get right(): number { return this._x + this._width; }
+    get ratio(): number { return this.width / this.height }
+
+    
 
     zero() {
         this._x = this._y = this._width = this._height = 0;
     }
     intersects(other: Rect) {
+        if (other.width == 0 || other.height == 0) {
+            return false;
+        }
+
         let value = (
             other.left > this.right ||
             other.right < this.left ||
@@ -77,5 +98,18 @@ export class Rect {
             other.bottom < this.top
         )
         return !value;
+    }
+    fit(width, height) {
+        let ratio = width / height;
+        let scale;
+
+        if (this.ratio > ratio) {
+            scale = width / this.width;
+        }
+        else {
+            scale = height / this.height;
+        }
+
+        return new Size(this.width * scale, this.height * scale);
     }
 }
