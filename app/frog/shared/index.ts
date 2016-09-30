@@ -8,3 +8,4 @@ export * from './tags.component';
 export * from './tags.service';
 export * from './comment.component';
 export * from './capitalize.pipe';
+export * from './comment-url.pipe';

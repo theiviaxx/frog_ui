@@ -27,6 +27,7 @@ class FVideo implements IItem {
     description: string;
     selected: boolean;
     framerate: number;
+    like_count: number;
 }
 
 @Component({

@@ -104,3 +104,14 @@ thumbnail img {
         -ms-transition: background 0.3s 0.5s;
         -ms-transition: opacity 0.3s 0.5s;
     }
+
+comment-item .comment-text a {
+    color: #13aff0;
+    font-weight: 300;
+    display: initial;
+    font-size: inherit;
+    font-weight: inherit;
+    height: initial;
+    line-height: initial;
+    padding: 0;
+}

@@ -23,6 +23,7 @@ class FImage implements IItem {
     comments: Comment[];
     description: string;
     selected: boolean;
+    like_count: number;
 }
 
 @Component({
@@ -75,19 +76,18 @@ export class ImageComponent{
     ngAfterViewInit() {
         this.ctx = this.canvas.nativeElement.getContext('2d');
         this.element = this.img.nativeElement;
+        this.clear();
         // TODO: How to properly do this in angular2
         this.element.onload = this.resize.bind(this);
         this.service.detail.subscribe(item => {
             if (item) {
-                // this.setImage(item)
                 setTimeout(() => this.setImage(item), 0);
             }
         });
     }
     setImage(image: IItem) {
         this.object = <FImage>image;
-        this.loading = true;
-        // this.changeDetectionRef.detectChanges();
+        this.loading = !this.element.complete;
     }
     // -- Events
     @HostListener('window:mouseup')

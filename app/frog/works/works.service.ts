@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Request, RequestMethod, Response, RequestOptions, URLSearchParams } from '@angular/http';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
@@ -15,6 +16,7 @@ export class WorksService {
     private items: IItem[];
     private guids: string[];
     private requested: number;
+    public routecache: string;
     public results: BehaviorSubject<IItem[]>;
     public resolved: BehaviorSubject<IItem[]>;
     public id: number;
@@ -23,7 +25,7 @@ export class WorksService {
     public terms: Array<Array<any>>;
     public loading: boolean;
     
-    constructor(public http:Http) {
+    constructor(private http:Http, private route: ActivatedRoute) {
         this.items = [];
         this.guids = [];
         this.terms = [[], []];
@@ -33,6 +35,11 @@ export class WorksService {
         this.resolved = new BehaviorSubject<IItem[]>(this.items);
     }
     get(id:number=0, append:boolean=false) {
+        if (window.location.pathname == this.routecache) {
+            return;
+        }
+        this.routecache = window.location.pathname;
+        
         if (id > 0) {
             this.id = id;
         }
@@ -48,7 +55,10 @@ export class WorksService {
 
         this.http.get(url, options)
             .map(this.extractData).subscribe(items => {
-                this.items.length = 0;
+                if (!append) {
+                    this.items.length = 0;
+                }
+                
                 for (var item of items) {
                     let obj = <IItem>item;
                     let author = <User>obj.author;
@@ -57,7 +67,6 @@ export class WorksService {
                     this.items.push(obj);
                     this.guids.push(obj.guid);
                 }
-                // this._observer.next(this._items);
                 this.results.next(this.items);
                 this.resolved.next(this.items);
                 this.loading = false;
@@ -72,6 +81,10 @@ export class WorksService {
     extractData(res: Response) {
         let body = res.json();
         return body.values || [];
+    }
+    extractValue(res: Response) {
+        let body = res.json();
+        return body.value || null;
     }
     handleError(error: any) {
         console.error(error);
@@ -92,8 +105,10 @@ export class WorksService {
     }
     likeItem(item:IItem) {
         let url = '/frog/like/' + item.guid;
-        this.http.put(url, null).subscribe(item => {
-                Materialize.toast('Liked!');
+        this.http.put(url, null).map(this.extractData).subscribe(items => {
+                // Materialize.toast('Liked!');
+                let index = this.guids.indexOf(items[0].guid);
+                this.items[index].like_count = items[0].like_count;
             }, error => console.log('error loading items'));
     }
     getComments(item:IItem) {
@@ -105,14 +120,14 @@ export class WorksService {
         let options = new RequestOptions();
         options.body = {comment: comment, guid: item.guid};
         options.withCredentials = true;
-        return this.http.post(url, options).map(this.extractData);
+        return this.http.post(url, options).map(this.extractValue);
     }
     update(item: IItem) {
         let url = '/frog/piece/' + item.guid;
         let options = new RequestOptions();
         options.body = {title: item.title, description: item.description};
         options.withCredentials = true;
-        return this.http.put(url, options).map(this.extractData);
+        return this.http.put(url, options).map(this.extractValue);
     }
     editTags(items: IItem[], add: Tag[], remove: Tag[]) {
         let url = '/frog/tag/manage';
@@ -134,7 +149,7 @@ export class WorksService {
         return this.http.get(url, options).map(this.extractData);
     }
     remove(items: IItem[]) {
-        let url = '/frog/gallery/' + this.id + '/';
+        let url = '/frog/gallery/' + this.id;
         let options = new RequestOptions();
         options.body = {
             guids: items.map(function(_) { return _.guid; }).join(',')

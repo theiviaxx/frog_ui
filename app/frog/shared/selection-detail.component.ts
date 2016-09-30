@@ -13,7 +13,7 @@ import { WorksService } from '../works/index';
 @Component({
     selector: 'selection-detail',
     template: `
-    <ul id="selection_sidenav" class="side-nav grey darken-4 grey lighten-4-text">
+    <ul id="selection_sidenav" class="side-nav grey darken-4 grey-text text-lighten-1">
         <li class="stack">
             <img *ngFor="let item of items | slice:0:10; let i = index" [style.left]="offset(i)" [style.top]="offset(i)" class="z-depth-1" src="{{item.thumbnail}}">
         </li>
@@ -33,7 +33,7 @@ import { WorksService } from '../works/index';
                 <h4 class="title">
                     <i class="material-icons green-text">label</i> Tags
                 </h4>
-                <tag *ngFor="let tag of tags" [item]="tag.id" (onClose)="removeTag($event)" (click)="navigateToTag(tag)"></tag>
+                <tag *ngFor="let tag of (tags | tagArtistFilter)" [item]="tag.id" [dark]="true" (onClick)="navigateToTag($event)" (onClose)="removeTag($event)"></tag>
                 <autocomplete (onSelect)="addTag($event)"></autocomplete>
             </div>
         </li>
@@ -63,7 +63,7 @@ import { WorksService } from '../works/index';
         '.tags > a { display: inline-block; line-height: inherit; position: relative; }',
         'a { color: inherit; transition: all 0.2s cubic-bezier(0.55, 0.085, 0.68, 0.53); }',
         '.stack { position: relative; height: 256px; }',
-        '.stack img { position: absolute; width: 128px; border: 1px solid #888; }',
+        '.stack img { position: absolute; width: 128px; border: 1px solid #ccc; border-bottom-width: 20px; }',
         'a.btn { line-height: 36px !important; height: 36px !important; padding: inherit; margin: inherit !important; }',
         'i { vertical-align: middle; }'
     ]
@@ -96,20 +96,19 @@ export class SelectionDetailComponent implements OnInit, AfterViewInit {
         return (this.enabled) ? 950 : 0;
     }
     aggregateTags() {
-        this.tags.length = 0;
+        let tags = [];
         let ids = [];
         
         for (let item of this.items) {
             for (let tag of item.tags) {
                 if (ids.indexOf(tag.id) == -1) {
-                    this.tags.push(<Tag>tag);
+                    tags.push(<Tag>tag);
                     ids.push(tag.id);
                 }
             }
         }
-    }
-    removeTag(tag) {
-        this.works.editTags(this.items, [], [tag]).subscribe();
+
+        this.tags = tags;
     }
     guidString() {
         if (this.items) {
@@ -128,21 +127,30 @@ export class SelectionDetailComponent implements OnInit, AfterViewInit {
         this.works.remove(this.items).subscribe();
     }
     addTag(event: any) {
-        let name = event.tag.id.toString();
-        this.tagssservice.create(name).subscribe(tag => {
-            this.works.editTags(this.items, [tag], []);
-            let found = false;
-            for (let t of this.tags) {
-                if (tag.id == t.id) {
-                    found = true;
-                    break;
+        this.tagssservice.create(event.tag.name).subscribe(tag => {
+            this.works.editTags(this.items, [tag], []).subscribe(() => {
+                let found = false;
+                let tags = this.tags.slice(0);
+                
+                for (let t of this.tags) {
+                    if (tag.id == t.id) {
+                        found = true;
+                        break;
+                    }
                 }
-            }
-            if (!found) {
-                this.tags.push(tag);
-            }
+                if (!found) {
+                    tags.push(tag);
+                }
+
+                if (tags.length != this.tags.length) {
+                    this.tags = tags;
+                }
+                Materialize.toast('Tag added', 4000);
+            });
         });
-        Materialize.toast('Tag added', 4000);
+    }
+    removeTag(tag) {
+        this.works.editTags(this.items, [], [tag]).subscribe();
     }
     offset(index: number) {
         return index * 8 + 12;

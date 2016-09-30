@@ -12,23 +12,23 @@ import { UserService } from './user.service';
         {{ csrf_token }}
         <div class='row'>
             <div class='input-field col s12'>
-                <input type="email" name='email'>
+                <input type="email" name='email' [(ngModel)]="email">
                 <label>Email</label>
             </div>
         </div>
         <div class='row'>
             <div class='input-field col s12'>
-                <input type="text" name='first'>
+                <input type="text" name='first' [(ngModel)]="first">
                 <label>First Name</label>
             </div>
         </div>
         <div class='row'>
             <div class='input-field col s12'>
-                <input type="text" name='last'>
+                <input type="text" name='last' [(ngModel)]="last">
                 <label>Last Name</label>
             </div>
         </div>
-        <a class="waves-effect waves-light btn light-green">Login</a>
+        <a class="waves-effect waves-light btn light-green" (click)="clickHandler()">Login</a>
     </form>
     <div *ngIf="message.length">
         <div class='msg alert-danger'>{{message}}</div>
@@ -52,9 +52,13 @@ export class LoginComponent implements OnInit {
     private message: string = '';
     private csrf_token: string = '';
 
-    constructor(private service: UserService) {
+    constructor(private service: UserService, private router: Router) {
         
     }
-
     ngOnInit() { }
+    clickHandler() {
+        this.service.login(this.email, this.first, this.last).subscribe(response => {
+            this.router.navigate(['/w/' + response]);
+        }, error => console.log(`Could not log you in: ${error}`));
+    }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewChecked, HostListener } from '@angular/core';
 
 import { WorksService } from './works.service';
 import { WorksThumbnailComponent } from './works-thumbnail.component';
@@ -32,15 +32,36 @@ import { IItem } from '../shared/index';
         '.col {padding: 0;}'
     ]
 })
-export class WorksListComponent implements OnInit {
+export class WorksListComponent implements AfterViewChecked {
     private items: IItem[];
+    private length: number;
+    private scrollcheck: boolean = false;
+    private minheight: number = 0;
+    private buffer: number = 300;
 
     constructor(private service:WorksService) {
-        this.service.results.subscribe(
-                       items => this.items = items
-                   );
+        this.service.results.subscribe(items => {
+            this.items = items;
+        });
     }
-    ngOnInit() {
+    ngAfterViewChecked() {
+        if (this.items.length > 0 && this.length != this.items.length) {
+            this.length = this.items.length;
+            this.scrollcheck = true;
+        }
+        
+    }
+    @HostListener('window:scroll')
+    scroll() {
+        let height = $('works-list').height();
+        if (this.scrollcheck && height > this.minheight) {
+            let heightDelta = height - window.scrollY;
+            
+            if (heightDelta < window.innerHeight + this.buffer) {
+                this.service.get(0, true);
+                this.minheight = height;
+            }
+        }
         
     }
 }

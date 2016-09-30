@@ -39,7 +39,7 @@ export class GalleryService {
         this.http.get(url, options)
             .map(this.extractData).subscribe(items => {
                 this._observer.next(items);
-            }, error => console.log('error loading items'));
+            }, error => console.log(`Could not query Gallery objects: ${error}`));
     }
     extractData(res: Response) {
         let body = res.json();

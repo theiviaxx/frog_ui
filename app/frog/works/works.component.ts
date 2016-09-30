@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, AfterViewInit} from '@angular/core';
 
 import { WorksListComponent } from './works-list.component';
 import { WorksDetailComponent } from './works-detail.component';
@@ -26,11 +26,8 @@ import { SelectionDetailComponent } from '../shared';
         'works-list { -webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none; }'
     ]
 })
-export class WorksComponent implements OnInit {
+export class WorksComponent {
     constructor(private service: WorksService) {
         
-    }
-    ngOnInit() {
-        Materialize.scrollFire([{selector: 'works-list', offset: 0, callback: function() {this.service.get(0, true)}.bind(this)}])
     }
 }

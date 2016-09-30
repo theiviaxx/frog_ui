@@ -1,4 +1,4 @@
-import  {Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Http, Request, RequestMethod, Response, RequestOptions, URLSearchParams } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';

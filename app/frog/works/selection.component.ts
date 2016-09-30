@@ -26,7 +26,7 @@ export class SelectionComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
-        // console.log(this);
+        
     }
     ngAfterViewInit() {
         this.element = this.canvas.nativeElement;

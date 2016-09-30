@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { HttpModule } from '@angular/http';
-import { JsonpModule } from '@angular/http';
+import { HttpModule, XSRFStrategy, CookieXSRFStrategy } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -14,7 +13,6 @@ import { FrogModule } from './frog/frog.module';
     imports: [
         BrowserModule,
         HttpModule,
-        JsonpModule,
         ReactiveFormsModule,
         routing,
         FrogModule,
@@ -23,7 +21,11 @@ import { FrogModule } from './frog/frog.module';
         AppComponent
     ],
     providers: [
-        appRoutingProviders
+        appRoutingProviders,
+        {
+            provide: XSRFStrategy,
+            useValue: new CookieXSRFStrategy('csrftoken', 'X-CSRFToken')
+        }
     ],
     bootstrap: [ AppComponent ]
 })

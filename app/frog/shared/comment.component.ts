@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 
 import { Comment } from './models';
 import { CapitalizePipe } from './capitalize.pipe';
+import { CommentURLPipe } from './comment-url.pipe';
 
 @Component({
     selector: 'comment-item',
@@ -16,11 +17,11 @@ import { CapitalizePipe } from './capitalize.pipe';
     </div>
     <div class="comment-body">
         <div class="commenter">
-            <a href="/artist/saintgenesis">{{comment.user.name | capitalize:1}}</a>
+            <a href="/artist/saintgenesis">{{comment.user?.name | capitalize:1}}</a>
         </div>
-        <div class="commenter-headline grey-text text-darken-1">{{comment.user.email}}</div>
+        <div class="commenter-headline grey-text text-darken-1">{{comment.user?.email}}</div>
         <div class="comment-text">
-            <p>{{comment.comment}}</p>
+            <p [outerHTML]="comment.comment | commentUrl"></p>
         </div>
         <ul class="social-actions">
             <li class="right-align"><i class="posted">{{comment.date | date}}</i></li>

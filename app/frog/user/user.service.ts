@@ -48,14 +48,24 @@ export class UserService {
     }
     extractData(res: Response) {
         let body = res.json();
-        return body.values || [];
+        return body.value || null;
     }
-    login() {
+    login(email, first, last) {
         let url = '/frog/login';
+        let options = new RequestOptions();
+        
+        options.body = {
+            email: email,
+            first_name: first,
+            last_name: last
+        };
+        options.withCredentials = true;
 
-        this.http.get(url, {withCredentials: true})
-            .map(this.extractData).subscribe(response => {
-                console.log(response);
-            }, error => console.log('error loading items'));
+        return this.http.post(url, options).map(this.extractData);
+    }
+    logout() {
+        let url = '/frog/logout';
+
+        return this.http.get(url).map(this.extractData);
     }
 }

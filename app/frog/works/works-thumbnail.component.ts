@@ -1,8 +1,8 @@
-import {Component, Input, OnInit, OnDestroy, ElementRef, AfterViewInit } from '@angular/core';
+import {Component, Input, OnInit, OnDestroy, ElementRef, AfterViewInit, HostListener } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { WorksService } from './works.service';
-import { SelectionService, TagsService, CapitalizePipe } from '../shared';
+import { SelectionService, TagsService, CapitalizePipe, IItem } from '../shared';
 
 @Component({
     selector: 'thumbnail',
@@ -29,26 +29,29 @@ import { SelectionService, TagsService, CapitalizePipe } from '../shared';
 export class WorksThumbnailComponent implements OnInit, AfterViewInit {
     @Input() item;
     private initialized: boolean;
+    private selecteditems: IItem[];
+    private ctrlKey: boolean;
 
     constructor(private element: ElementRef, private router: Router, private service: SelectionService, private works: WorksService, private tags: TagsService) {
         this.initialized = false;
-        this.service.selectionRect.subscribe({
-            next: (rect) => {
-                if (!this.item) {
-                    return;
-                }
-                let r = this.element.nativeElement.getBoundingClientRect();
-                if (rect.intersects(r)) {
-                    this.service.selectItem(this.item);
-                }
-                else {
+        this.service.selection.subscribe(items => this.selecteditems = items);
+        this.service.selectionRect.subscribe(rect => {
+            if (!this.item) {
+                return;
+            }
+            let r = this.element.nativeElement.getBoundingClientRect();
+            if (rect.intersects(r)) {
+                this.service.selectItem(this.item);
+            }
+            else {
+                //if (!this.ctrlKey) {
                     this.service.deselectItem(this.item);
-                }
+                //}
             }
         });
     }
     ngOnInit() {
-        // console.log(JSON.stringify(this.item));
+        
     }
     ngAfterViewInit() {
         
@@ -59,7 +62,13 @@ export class WorksThumbnailComponent implements OnInit, AfterViewInit {
             this.service.selectItem(this.item, true);
         }
         else {
-            this.router.navigate(['/v', 0, this.item.guid]);
+            let guids = [this.item.guid];
+            let index = 0;
+            if (this.selecteditems) {
+                guids = this.selecteditems.map(function(x) { return x.guid; });
+                index = guids.indexOf(this.item.guid);
+            }
+            this.router.navigate(['/v', index, guids.join(',')]);
         }
     }
     like() {
@@ -87,5 +96,9 @@ export class WorksThumbnailComponent implements OnInit, AfterViewInit {
         if (event.keyCode == 100 && event.ctrl) {
             this.service.clear();
         }
+    }
+    @HostListener('window:mousemove', ['$event'])
+    isCtrlDown(event: MouseEvent) {
+        this.ctrlKey = event.ctrlKey;
     }
 }

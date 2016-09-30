@@ -50,7 +50,7 @@ import { IItem, Tag, User, SelectionService, AutocompleteComponent, TagsComponen
             <h4 class="title">
                 <i class="material-icons green-text">label</i> Tags
             </h4>
-            <tag *ngFor="let tag of item.tags | tagArtistFilter" [item]="tag.id" [dark]="true" (onClose)="removeTag($event)" (click)="navigateToTag(tag)"></tag>
+            <tag *ngFor="let tag of item.tags | tagArtistFilter" [item]="tag.id" [dark]="true" (onClose)="removeTag($event)" (onClick)="navigateToTag(tag)"></tag>
             <autocomplete (onSelect)="addTag($event)"></autocomplete>
         </div>
         <div class="separator"></div>
@@ -129,7 +129,7 @@ import { IItem, Tag, User, SelectionService, AutocompleteComponent, TagsComponen
         'td {font-size: 12px; padding: 6px 5px;}',
         'div.name { display: block; min-height: 30px; }',
         'div.name a { line-height: 28px; font-size: 28px; padding: 0; height: inherit; }',
-        'a { color: #13aff0; transition: all 0.2s cubic-bezier(0.55, 0.085, 0.68, 0.53); font-weight: 300; }',
+        'a { color: #13aff0; transition: all 0.2s cubic-bezier(0.55, 0.085, 0.68, 0.53); font-weight: 300; display: initial; font-size: inherit; font-weight: inherit; height: initial; line-height: initial; padding: 0; }',
         '.artist-name-and-headline { margin-left: 0; }',
         '.headline { line-height: 20px; font-size: 14px; min-height: 20px; }',
         '.works-detail { padding: 20px 25px 20px 20px; }',
@@ -179,7 +179,7 @@ export class WorksDetailComponent implements OnInit {
         
     }
     ngOnInit() {
-        // console.log(JSON.stringify(this.item));
+        
     }
     postComment() {
         this.works.addComment(this.item, this.comment).subscribe(comment => {
@@ -200,10 +200,13 @@ export class WorksDetailComponent implements OnInit {
             }
         }
         if (!found) {
-            let name = event.tag.id.toString();
+            let name = event.tag.name;
             this.tagssservice.create(name).subscribe(tag => {
-                this.works.editTags([this.item], [tag], []);
-                this.item.tags.push(tag);
+                this.works.editTags([this.item], [tag], []).subscribe(result => {;
+                    let tags = this.item.tags.splice(0);
+                    tags.push(tag);
+                    this.item.tags = tags;
+                });
             });
         }
     }

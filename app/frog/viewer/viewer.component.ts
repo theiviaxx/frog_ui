@@ -17,9 +17,15 @@ import { VideoComponent } from './video.component';
         <works-detail></works-detail>
     </ul>
     <div class="actions">
-        <a (click)="location.back()"><i class="material-icons">close</i></a>
+        <a href="" (click)="close($event)" class="grey-text text-darken-4"><i class="material-icons medium">close</i></a>
     </div>
-    <div id='viewer' class="noselect">
+    <div class='row' *ngIf="objects.length > 0">
+        <div class='col s1 left'>
+            <a (click)="previous()"><i class="material-icons large" [style.padding-top]="height / 2">navigate_before</i></a>
+        </div>
+        <div class='col s1 right'>
+            <a (click)="next()"><i class="material-icons large" [style.padding-top]="height / 2">navigate_next</i></a>
+        </div>
         <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
             <a class="btn-floating btn-large light-green">
                 <i class="large material-icons">more_vert</i>
@@ -30,22 +36,17 @@ import { VideoComponent } from './video.component';
                 <li><a class="btn-floating blue darken-4" (click)="original()"><i class="material-icons">zoom_in</i></a></li>
             </ul>
         </div>
+    </div>
+    <div id='viewer' class="noselect">
         <frog-image *ngIf="isimage"></frog-image>
         <frog-video *ngIf="!isimage"></frog-video>
-    </div>
-    <div class='row' *ngIf="objects.length > 0">
-        <div class='col s1 left'>
-            <a class="waves-effect waves-light" (click)="previous()"><i class="material-icons large" [style.padding-top]="height / 2">navigate_before</i></a>
-        </div>
-        <div class='col s1 right'>
-            <a class="waves-effect waves-light" (click)="next()"><i class="material-icons large" [style.padding-top]="height / 2">navigate_next</i></a>
-        </div>
     </div>
     `,
     styles: [
         '#viewer { background: #000; position: absolute; width: 100%; height: 100%; top: 0; left: 0; cursor: move; }',
-        '.actions { position: absolute; top: 0; right: 0; }',
-        '.row { margin-bottom: 0; z-index: 3000; }',
+        '.actions { position: absolute; top: 0; right: 0; z-index: 3000; }',
+        '.row { margin-bottom: 0; z-index: 3000; height: 100%; }',
+        '.row > div.col { height: 100%; }',
         '.row a { height: 100%; opacity: 0; -webkit-transition: opacity 0.3s 0.0s; -moz-transition: opacity 0.3s 0.0s; -ms-transition: opacity 0.3s 0.0s; }',
         '.row a:hover { height: 100%; opacity: 1; }',
     ]
@@ -115,6 +116,11 @@ export class ViewerComponent implements OnInit, AfterViewInit {
     }
     download() {
 
+    }
+    close(event: MouseEvent) {
+        event.preventDefault();
+        // this.router.navigate(['/w/' + (this.service.id || 1)]);
+        this.router.navigate([this.service.routecache || '/w/1']);
     }
     setIndex(index:number) {
         this.index = index;

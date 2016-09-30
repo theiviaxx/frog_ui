@@ -1,28 +1,30 @@
 import {Injectable} from '@angular/core';
-import {Http, Request, RequestMethod, Response, RequestOptions, Jsonp} from '@angular/http';
+import {Http, Request, RequestMethod, Response, RequestOptions} from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
-import { Subject } from 'rxjs/Subject';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 import { Tag } from './models';
 
 @Injectable()
 export class TagsService {
     results: Observable<Tag[]>;
-    tags: Subject<Tag[]>;
+    tags: ReplaySubject<Tag[]>;
     private _observer: Observer<Tag[]>;
     private _tags: Tag[];
     private _ids: number[];
     
-    constructor(private http:Http, private jsonp: Jsonp) {
+    constructor(private http:Http) {
         this._tags = [];
         this._ids = [];
-        this.tags = new Subject<Tag[]>();
+        this.tags = new ReplaySubject<Tag[]>();
+        this.get();
     }
     get() {
         this.http.get('/frog/tag?cache=' + Date.now())
             .map(this.extractData).subscribe(tags => {
                 this._tags = tags;
+                this._ids = [];
                 for (let tag of tags) {
                     this._ids.push(tag.id);
                 }
@@ -33,6 +35,11 @@ export class TagsService {
         let body = res.json();
         
         return body.values || [];
+    }
+    extractValue(res: Response) {
+        let body = res.json();
+        
+        return body.value || null;
     }
     getTagById(id: number) {
         let index = this._ids.indexOf(id);
@@ -56,6 +63,11 @@ export class TagsService {
         let options = new RequestOptions();
         options.body = {name: name};
         options.withCredentials = true;
-        return this.http.post(url, options).map(this.extractData);
+        let ob = this.http.post(url, options).map(this.extractValue);
+        ob.subscribe(tag => {
+            this._tags.push(tag);
+            this._ids.push(tag.id);
+        });
+        return ob;
     }
 }

@@ -33,7 +33,8 @@ import { Tag, TagsComponent, AutocompleteComponent } from '../shared';
     </div>
     `,
     styles: [
-        '#filtered_results { position: relative; display: inline-flex; }'
+        '#filtered_results { position: relative; display: inline-flex; height: 100%; }',
+        'tag { margin-top: 18px; }'
     ]
 })
 export class FilterComponent implements OnInit, OnDestroy {

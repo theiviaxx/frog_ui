@@ -46,4 +46,5 @@ export interface IItem {
     comments?: Comment[];
     description: string;
     selected: boolean;
+    like_count: number;
 }

@@ -23,7 +23,8 @@ import {
     CapitalizePipe, 
     TagArtistFilterPipe, 
     AutocompleteComponent, 
-    CommentComponent
+    CommentComponent,
+    CommentURLPipe
 } from './shared/index';
 
 import {
@@ -36,6 +37,7 @@ import {
 import {
     UserService,
     LoginComponent,
+    LogoutComponent,
     userRouting
 } from './user/index';
 
@@ -61,6 +63,7 @@ import {
         SelectionDetailComponent,
         AutocompleteComponent, 
         CommentComponent,
+        CommentURLPipe,
         CapitalizePipe, 
         TagArtistFilterPipe, 
 
@@ -68,7 +71,8 @@ import {
         ImageComponent,
         VideoComponent,
 
-        LoginComponent
+        LoginComponent,
+        LogoutComponent
     ],
     providers: [
         WorksService,

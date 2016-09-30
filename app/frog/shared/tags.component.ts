@@ -9,8 +9,8 @@ import { Tag } from './models';
     template: `
     <div class="chip" [class.grey]="dark" [class.darken-3]="dark" [class.grey-text]="dark">
         <i class="material-icons left">{{(id == 0) ? "search" : "label"}}</i>
-        {{tag.name}}
-        <i *ngIf="editable" class="close material-icons" (click)="close()">close</i>
+        <span (click)="clickHandler($event)">{{tag.name}}</span>
+        <i *ngIf="editable" class="close material-icons" (click)="closeHandler($event)">close</i>
     </div>`,
     styles: [
         '.chip, .chip > i.material-icons { height: 24px; line-height: 24px; border-radius: 2px; }',
@@ -22,26 +22,29 @@ export class TagsComponent implements OnInit, OnDestroy, AfterViewInit {
     @Input() editable: boolean = true;
     @Input() dark: boolean = false;
     @Output() onClose = new EventEmitter<Tag>();
+    @Output() onClick = new EventEmitter<Tag>();
     private tag: Tag;
 
     constructor(private service: TagsService, private changeDetectionRef : ChangeDetectorRef) {
         this.tag = new Tag(0, '', false);
-    }
-    ngAfterViewInit() {
-        if (parseInt(this.item)) {
-            this.tag.id = this.item;
-        }
-        else {
-            this.tag.name = this.item;
-        }
-        this.service.tags.subscribe({
-            next: (tags) => {
-                if (this.tag.id) {
-                    this.resolveTag();
-                }
+
+        this.service.tags.subscribe(tags => {
+            if (this.tag.id) {
+                this.resolveTag();
             }
         });
-        this.resolveTag();
+    }
+    ngAfterViewInit() {
+        setTimeout(() => {
+            if (parseInt(this.item)) {
+                this.tag.id = this.item;
+            }
+            else {
+                this.tag.name = this.item;
+            }
+            
+            this.resolveTag();
+        });
     }
     ngOnInit() {}
     ngOnDestroy() {}
@@ -50,10 +53,14 @@ export class TagsComponent implements OnInit, OnDestroy, AfterViewInit {
         if (tag !== null) {
             this.tag.name = tag.name;
             this.tag.artist = tag.artist;
-            this.changeDetectionRef.detectChanges();
         }
     }
-    close() {
+    clickHandler(event: MouseEvent) {
+        event.preventDefault();
+        this.onClick.emit();
+    }
+    closeHandler(event: MouseEvent) {
+        event.preventDefault();
         this.onClose.emit(this.tag);
     }
 }
